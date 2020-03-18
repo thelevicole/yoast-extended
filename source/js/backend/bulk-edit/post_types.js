@@ -9,12 +9,12 @@
 	const bulkInputTypes = [
 		{
 			selector: '.yoast_extended-title[data-id]',
-			action: 'bulk_edit_post_titles',
+			field: 'title',
 			delay: 800 // 0.8 seconds
 		},
 		{
 			selector: '.yoast_extended-description[data-id]',
-			action: 'bulk_edit_post_descriptions',
+			field: 'metadesc',
 			delay: 1000 // 1 seconds
 		}
 	];
@@ -30,17 +30,17 @@
 		const bulkInput = bulkInputTypes[ i ];
 
 		const selector = bulkInput.selector;
-		const action = bulkInput.action;
+		const field = bulkInput.field;
 		const delay = bulkInput.delay;
 
 		// Create empty event tracker group
-		if ( !eventTracker[ action ] ) {
-			eventTracker[ action ] = {};
+		if ( !eventTracker[ field ] ) {
+			eventTracker[ field ] = {};
 		}
 
 		// Create empty value tracker group
-		if ( !valueTracker[ action ] ) {
-			valueTracker[ action ] = {};
+		if ( !valueTracker[ field ] ) {
+			valueTracker[ field ] = {};
 		}
 
 		$form.on( 'cut paste input change edit', selector, function() {
@@ -51,23 +51,27 @@
 
 			if ( post_id ) {
 
-				// Only run action if new value is different to old value
-				if ( value !== valueTracker[ action ][ post_id ] ) {
+				// Only run request if new value is different to old value
+				if ( value !== valueTracker[ field ][ post_id ] ) {
 
 					// Cancel previous edit
-					if ( eventTracker[ action ][ post_id ] ) {
-						clearTimeout( eventTracker[ action ][ post_id ] );
+					if ( eventTracker[ field ][ post_id ] ) {
+						clearTimeout( eventTracker[ field ][ post_id ] );
 					}
 
+					// Store old/new value in tracker
+					valueTracker[ field ][ post_id ] = value;
+
 					// Perform ajax request after timeout has completed
-					eventTracker[ action ][ post_id ] = setTimeout( () => {
+					eventTracker[ field ][ post_id ] = setTimeout( () => {
 
 						$input.blur().prop( 'disabled', true );
 
-						controller.ajax( action, {
+						controller.ajax( 'bulk_edit_post_types', {
 							method: 'POST',
 							data: {
 								post_id: post_id,
+								field: field,
 								value: value
 							}
 						} ).then( function( response ) {
@@ -94,9 +98,6 @@
 						} );
 
 					}, delay );
-
-					// Store old/new value in tracker
-					valueTracker[ action ][ post_id ] = value;
 				}
 
 			}

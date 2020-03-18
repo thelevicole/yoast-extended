@@ -36,8 +36,7 @@ class AjaxRequests {
 		/**
 		 * Register accepted ajax requests
 		 */
-		$this->register_action( 'bulk_edit_post_titles' );
-		$this->register_action( 'bulk_edit_post_descriptions' );
+		$this->register_action( 'bulk_edit_post_types' );
 	}
 
 	/**
@@ -77,48 +76,25 @@ class AjaxRequests {
 	}
 
 	/**
-	 * Update a single title value
+	 * Update a post type meta values
 	 */
-	public function request_bulk_edit_post_titles() {
+	public function request_bulk_edit_post_types() {
 		$post_id = $this->input( 'post_id', 'intval' );
-		$title = $this->input( 'value' );
+		$value = $this->input( 'value' );
+		$field = $this->input( 'field' );
+
 		$valid = $this->is_valid_nonce();
 
-		if ( !$valid || !$post_id ) {
+		if ( !$valid || !$post_id || !in_array( $field, [ 'title', 'metadesc' ] ) ) {
 			return wp_send_json_error( $this->strings[ 'invalid_request' ] );
 		}
 
-		$success = \YoastExtended\update_meta_value( 'title', $post_id, $title );
+		$success = \YoastExtended\update_meta_value( $field, $post_id, $value );
 
 		if ( $success ) {
 			return wp_send_json_success( [
 				'message' => $this->strings[ 'generic_success' ],
-				'replacement' => sprintf( '<small><strong>%s</strong> %s</small>', __( 'New value:', 'yoast_extended' ), esc_html( wp_unslash( $title ) ) )
-			] );
-		}
-
-
-		return wp_send_json_error( $this->strings[ 'unknown_error' ] );
-	}
-
-	/**
-	 * Update a single description value
-	 */
-	public function request_bulk_edit_post_descriptions() {
-		$post_id = $this->input( 'post_id', 'intval' );
-		$title = $this->input( 'value' );
-		$valid = $this->is_valid_nonce();
-
-		if ( !$valid || !$post_id ) {
-			return wp_send_json_error( $this->strings[ 'invalid_request' ] );
-		}
-
-		$success = \YoastExtended\update_meta_value( 'metadesc', $post_id, $title );
-
-		if ( $success ) {
-			return wp_send_json_success( [
-				'message' => $this->strings[ 'generic_success' ],
-				'replacement' => sprintf( '<small><strong>%s</strong> %s</small>', __( 'New value:', 'yoast_extended' ), esc_html( wp_unslash( $title ) ) )
+				'replacement' => sprintf( '<small><strong>%s</strong> %s</small>', __( 'New value:', 'yoast_extended' ), esc_html( wp_unslash( $value ) ) )
 			] );
 		}
 
