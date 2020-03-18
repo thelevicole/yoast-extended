@@ -2,7 +2,7 @@
 
 namespace YoastExtended\Admin\Tables;
 
-use \WP_Error, \WP_List_Table, \WP_Query, \WP_Post;
+use \WP_Error, \WP_List_Table, \WP_Term_Query, \WP_Term;
 use \WPSEO_Meta;
 
 class BulkEdit_Taxonomies extends WP_List_Table {
@@ -101,7 +101,7 @@ class BulkEdit_Taxonomies extends WP_List_Table {
 	 */
 	public function get_sortable_columns() {
 		return [
-			'term_id'	=> [ 'ID', true ],
+			'term_id'	=> [ 'term_id', true ],
 			'name'		=> [ 'name', true ],
 		];
 	}
@@ -113,35 +113,44 @@ class BulkEdit_Taxonomies extends WP_List_Table {
 
 		$this->_column_headers = [ $this->get_columns(), [], $this->get_sortable_columns() ];
 
-		$post_types = $this->get_mutable_taxonomies();
+		$per_page = (int)get_option( 'posts_per_page' );
 
-		$search = !empty( $_REQUEST[ 's' ] ) ? \sanitize_text_field( $_REQUEST[ 's' ] ) : null;
+		$taxonomies = $this->get_mutable_taxonomies();
+
+		$search = !empty( $_REQUEST[ 's' ] ) ? \sanitize_text_field( $_REQUEST[ 's' ] ) : '';
 		$paged = !empty( $_REQUEST[ 'paged' ] ) ? (int)$_REQUEST[ 'paged' ] : 1;
 
-		$orderby = !empty( $_REQUEST[ 'orderby' ] ) ? \sanitize_text_field( $_REQUEST[ 'orderby' ] ) : null;
-		$order = !empty( $_REQUEST[ 'order' ] ) ? \sanitize_text_field( $_REQUEST[ 'order' ] ) : null;
+		$orderby = !empty( $_REQUEST[ 'orderby' ] ) ? \sanitize_text_field( $_REQUEST[ 'orderby' ] ) : 'name';
+		$order = !empty( $_REQUEST[ 'order' ] ) ? \sanitize_text_field( $_REQUEST[ 'order' ] ) : 'ASC';
 
 		$filter_type = !empty( $_GET[ 'type' ] ) ? \sanitize_text_field( $_GET[ 'type' ] ) : null;
 
-		$_query = new WP_Query( [
-			'post_type' => $filter_type && in_array( $filter_type, $post_types ) ? $filter_type : $post_types,
-			's' => $search,
-			'paged' => $paged,
+		$terms = ( new WP_Term_Query )->query( [
+			'taxonomy' => $filter_type && in_array( $filter_type, $taxonomies ) ? $filter_type : $taxonomies,
+			'search' => $search,
+			'offset' => floor( ( $paged - 1 ) * $per_page ),
 			'orderby' => $orderby,
-			'order' => $order
+			'order' => $order,
+			'hide_empty' => false,
+			'number' => $per_page
+		] );
+
+		$count = ( new WP_Term_Query )->query( [
+			'fields' => 'count',
+			'taxonomy' => $filter_type && in_array( $filter_type, $taxonomies ) ? $filter_type : $taxonomies,
+			'search' => $search,
+			'hide_empty' => false
 		] );
 
 		// Update the pagination links
 		$this->set_pagination_args( [
-			'total_items'	=> $_query->found_posts,
-			'total_pages'	=> $_query->max_num_pages,
-			'per_page'		=> $_query->get( 'posts_per_page' )
+			'total_items'	=> $count,
+			'total_pages'	=> ceil( $count / $per_page ),
+			'per_page'		=> $per_page
 		] );
 
 		// Get posts from query
-		$this->items = $_query->posts;
-
-		\wp_reset_postdata();
+		$this->items = $terms;
 
 	}
 
@@ -164,7 +173,7 @@ class BulkEdit_Taxonomies extends WP_List_Table {
 	 * @param  WP_Post $item
 	 * @return void
 	 */
-	public function column_post_title( $item ) {
+	public function ONHOLD_column_post_title( $item ) {
 		$permalink = get_permalink( $item->ID );
 		$post_type = \YoastExtended\get_post_type_label( $item->post_type );
 		printf( '<div><strong><a href="%s">%s</a> &mdash; %s</strong></div>', $permalink, $item->post_title, $post_type );
@@ -177,7 +186,7 @@ class BulkEdit_Taxonomies extends WP_List_Table {
 	 * @param  WP_Post $item
 	 * @return void
 	 */
-	public function column_yoast_title( $item ) {
+	public function ONHOLD_column_yoast_title( $item ) {
 
 		/**
 		 * Get current title value from database
@@ -201,7 +210,7 @@ class BulkEdit_Taxonomies extends WP_List_Table {
 	 * @param  WP_Post $item
 	 * @return void
 	 */
-	public function column_yoast_description( $item ) {
+	public function ONHOLD_column_yoast_description( $item ) {
 
 		/**
 		 * Get current title value from database
