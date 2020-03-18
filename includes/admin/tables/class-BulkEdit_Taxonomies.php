@@ -173,10 +173,10 @@ class BulkEdit_Taxonomies extends WP_List_Table {
 	 * @param  WP_Post $item
 	 * @return void
 	 */
-	public function ONHOLD_column_post_title( $item ) {
-		$permalink = get_permalink( $item->ID );
-		$post_type = \YoastExtended\get_post_type_label( $item->post_type );
-		printf( '<div><strong><a href="%s">%s</a> &mdash; %s</strong></div>', $permalink, $item->post_title, $post_type );
+	public function column_name( $item ) {
+		$permalink = get_term_link( $item->term_id );
+		$taxonomy = \YoastExtended\get_taxonomy_label( $item->taxonomy );
+		printf( '<div><strong><a href="%s">%s</a> &mdash; %s</strong></div>', $permalink, $item->name, $taxonomy );
 		printf( '<div><small>%1$s</small></div>', wp_make_link_relative( $permalink ) );
 	}
 
@@ -186,16 +186,16 @@ class BulkEdit_Taxonomies extends WP_List_Table {
 	 * @param  WP_Post $item
 	 * @return void
 	 */
-	public function ONHOLD_column_yoast_title( $item ) {
+	public function column_yoast_title( $item ) {
 
 		/**
 		 * Get current title value from database
 		 *
 		 * @var ?string
 		 */
-		$current_value = \YoastExtended\get_meta_value( 'title', $item->ID );
+		$current_value = \YoastExtended\get_term_meta( 'title', $item->term_id );
 
-		printf( '<input type="text" name="seo_title" class="yoast_extended-title" data-id="%d" value="" placeholder="%s" style="width: 100%%;">', $item->ID, esc_attr( __( 'Enter a new SEO title', 'yoast_extended' ) ) );
+		printf( '<input type="text" name="seo_title" class="yoast_extended-title" data-id="%d" value="" placeholder="%s" style="width: 100%%;">', $item->term_id, esc_attr( __( 'Enter a new SEO title', 'yoast_extended' ) ) );
 
 		echo '<div class="yoast_extended-current">';
 			if ( $current_value ) {
@@ -210,16 +210,16 @@ class BulkEdit_Taxonomies extends WP_List_Table {
 	 * @param  WP_Post $item
 	 * @return void
 	 */
-	public function ONHOLD_column_yoast_description( $item ) {
+	public function column_yoast_description( $item ) {
 
 		/**
 		 * Get current title value from database
 		 *
 		 * @var ?string
 		 */
-		$current_value = \YoastExtended\get_meta_value( 'metadesc', $item->ID );
+		$current_value = \YoastExtended\get_term_meta( 'metadesc', $item->term_id );
 
-		printf( '<textarea name="seo_description" class="yoast_extended-description" data-id="%d" placeholder="%s" style="width: 100%%;"></textarea>', $item->ID, esc_attr( __( 'Enter a new SEO description', 'yoast_extended' ) ) );
+		printf( '<textarea name="seo_description" class="yoast_extended-description" data-id="%d" placeholder="%s" style="width: 100%%;"></textarea>', $item->term_id, esc_attr( __( 'Enter a new SEO description', 'yoast_extended' ) ) );
 
 		echo '<div class="yoast_extended-current">';
 			if ( $current_value ) {

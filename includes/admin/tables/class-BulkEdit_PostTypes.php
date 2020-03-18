@@ -184,7 +184,7 @@ class BulkEdit_PostTypes extends WP_List_Table {
 		 *
 		 * @var ?string
 		 */
-		$current_value = \YoastExtended\get_meta_value( 'title', $item->ID );
+		$current_value = \YoastExtended\get_post_meta( 'title', $item->ID );
 
 		printf( '<input type="text" name="seo_title" class="yoast_extended-title" data-id="%d" value="" placeholder="%s" style="width: 100%%;">', $item->ID, esc_attr( __( 'Enter a new SEO title', 'yoast_extended' ) ) );
 
@@ -208,7 +208,7 @@ class BulkEdit_PostTypes extends WP_List_Table {
 		 *
 		 * @var ?string
 		 */
-		$current_value = \YoastExtended\get_meta_value( 'metadesc', $item->ID );
+		$current_value = \YoastExtended\get_post_meta( 'metadesc', $item->ID );
 
 		printf( '<textarea name="seo_description" class="yoast_extended-description" data-id="%d" placeholder="%s" style="width: 100%%;"></textarea>', $item->ID, esc_attr( __( 'Enter a new SEO description', 'yoast_extended' ) ) );
 
