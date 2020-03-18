@@ -12,7 +12,7 @@ class BulkEdit_PostTypes extends WP_List_Table {
 	 *
 	 * @return array
 	 */
-	public function get_metable_types() {
+	public function get_mutable_types() {
 		/**
 		 * Get all registered post types
 		 *
@@ -52,6 +52,34 @@ class BulkEdit_PostTypes extends WP_List_Table {
 		return $mutable_types;
 	}
 
+	public function get_views() {
+		$post_types = $this->get_mutable_types();
+
+		$is_filtered = false;
+
+		$view_links = [
+			'all' => '<a href="' . remove_query_arg( 'type' ) . '">' . __( 'All', 'yoast_extended' ) . '</a>'
+		];
+
+		foreach ( $post_types as $post_type ) {
+			$type_object = get_post_type_object( $post_type );
+			$current = null;
+
+			if ( !empty( $_GET[ 'type' ] ) && $_GET[ 'type' ] === $post_type ) {
+				$current = ' class="current"';
+				$is_filtered = true;
+			}
+
+			$view_links[ $post_type ] = '<a href="' . add_query_arg( 'type', $post_type ) . '"' . $current . '>' . ( !empty( $type_object->label ) ? $type_object->label : $post_type ) . '</a>';
+		}
+
+		if ( !$is_filtered ) {
+			$view_links[ 'all' ] = str_replace( '<a href="' , '<a class="current" href="', $view_links[ 'all' ] );
+		}
+
+		return $view_links;
+	}
+
 	/**
 	 * Associative array of columns
 	 *
@@ -59,6 +87,7 @@ class BulkEdit_PostTypes extends WP_List_Table {
 	 */
 	public function get_columns() {
 		return [
+			'ID'                => __( 'Post ID', 'yoast_extended' ),
 			'post_title'		=> __( 'Post Title', 'yoast_extended' ),
 			'yoast_title'		=> __( 'Yoast SEO title', 'yoast_extended' ),
 			'yoast_description'	=> __( 'Yoast SEO description', 'yoast_extended' )
@@ -71,7 +100,10 @@ class BulkEdit_PostTypes extends WP_List_Table {
 	 * @return array
 	 */
 	public function get_sortable_columns() {
-		return [];
+		return [
+			'ID' => [ 'ID', true ],
+			'post_title' => [ 'post_title', true ],
+		];
 	}
 
 	/**
@@ -81,11 +113,22 @@ class BulkEdit_PostTypes extends WP_List_Table {
 
 		$this->_column_headers = [ $this->get_columns(), [], $this->get_sortable_columns() ];
 
+		$post_types = $this->get_mutable_types();
+
 		$search = !empty( $_REQUEST[ 's' ] ) ? \sanitize_text_field( $_REQUEST[ 's' ] ) : null;
+		$paged = !empty( $_REQUEST[ 'paged' ] ) ? (int)$_REQUEST[ 'paged' ] : 1;
+
+		$orderby = !empty( $_REQUEST[ 'orderby' ] ) ? \sanitize_text_field( $_REQUEST[ 'orderby' ] ) : null;
+		$order = !empty( $_REQUEST[ 'order' ] ) ? \sanitize_text_field( $_REQUEST[ 'order' ] ) : null;
+
+		$filter_type = !empty( $_GET[ 'type' ] ) ? \sanitize_text_field( $_GET[ 'type' ] ) : null;
 
 		$_query = new WP_Query( [
-			'post_type' => $this->get_metable_types(),
-			's' => $search
+			'post_type' => $filter_type && in_array( $filter_type, $post_types ) ? $filter_type : $post_types,
+			's' => $search,
+			'paged' => $paged,
+			'orderby' => $orderby,
+			'order' => $order
 		] );
 
 		// Update the pagination links
@@ -122,8 +165,8 @@ class BulkEdit_PostTypes extends WP_List_Table {
 	 * @return void
 	 */
 	public function column_post_title( $item ) {
-		printf( '<strong>%s</strong>', $item->post_title );
-		echo '<br>';
+		printf( '<div><strong>%s</strong></div>', $item->post_title );
+		printf( '<div><strong>%s</strong> %s</div>', __( 'Post type:', 'yoast_extended' ), $item->post_type );
 		printf( '<a href="%1$s" target="_blank" title="%2$s" tabindex="-1">%1$s</strong>', get_permalink( $item->ID ), __( 'Opens in new tab', 'yoast_extended' ) );
 	}
 

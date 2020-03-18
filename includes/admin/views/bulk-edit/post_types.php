@@ -39,7 +39,9 @@
 
 ?>
 
-<form method="get" id="yoast_extended-bulk_edit-post_types">
+<?php $table->views(); ?>
+
+<form method="post" id="yoast_extended-bulk_edit-post_types">
 	<input type="hidden" name="page" value="<?= !empty( $_GET[ 'page' ] ) ? esc_attr( $_GET[ 'page' ] ) : null; ?>">
 	<input type="hidden" name="tab" value="<?= !empty( $_GET[ 'tab' ] ) ? esc_attr( $_GET[ 'tab' ] ) : null; ?>">
 	<p class="search-box" style="margin-bottom: 10px;">
