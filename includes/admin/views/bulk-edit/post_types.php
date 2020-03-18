@@ -1,13 +1,6 @@
 <?php
 
 	/**
-	 * Get the admin view controller instance
-	 *
-	 * @var \YoastExtnded\Admin\Views
-	 */
-	$controller = yoast_extended()->admin;
-
-	/**
 	 * Create new instance of the table
 	 *
 	 * @var \YoastExtended\Admin\Tables\BulkEdit_PostTypes
