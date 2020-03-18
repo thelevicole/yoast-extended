@@ -62,7 +62,7 @@ class BulkEdit_PostTypes extends WP_List_Table {
 		];
 
 		foreach ( $post_types as $post_type ) {
-			$type_object = get_post_type_object( $post_type );
+
 			$current = null;
 
 			if ( !empty( $_GET[ 'type' ] ) && $_GET[ 'type' ] === $post_type ) {
@@ -70,7 +70,7 @@ class BulkEdit_PostTypes extends WP_List_Table {
 				$is_filtered = true;
 			}
 
-			$view_links[ $post_type ] = '<a href="' . add_query_arg( 'type', $post_type ) . '"' . $current . '>' . ( !empty( $type_object->label ) ? $type_object->label : $post_type ) . '</a>';
+			$view_links[ $post_type ] = '<a href="' . add_query_arg( 'type', $post_type ) . '"' . $current . '>' . ( \YoastExtended\get_post_type_label( $post_type ) ) . '</a>';
 		}
 
 		if ( !$is_filtered ) {
@@ -165,9 +165,10 @@ class BulkEdit_PostTypes extends WP_List_Table {
 	 * @return void
 	 */
 	public function column_post_title( $item ) {
-		printf( '<div><strong>%s</strong></div>', $item->post_title );
-		printf( '<div><strong>%s</strong> %s</div>', __( 'Post type:', 'yoast_extended' ), $item->post_type );
-		printf( '<a href="%1$s" target="_blank" title="%2$s" tabindex="-1">%1$s</strong>', get_permalink( $item->ID ), __( 'Opens in new tab', 'yoast_extended' ) );
+		$permalink = get_permalink( $item->ID );
+		$post_type = \YoastExtended\get_post_type_label( $item->post_type );
+		printf( '<div><strong><a href="%s">%s</a> &mdash; %s</strong></div>', $permalink, $item->post_title, $post_type );
+		printf( '<div><small>%1$s</small></div>', wp_make_link_relative( $permalink ) );
 	}
 
 	/**

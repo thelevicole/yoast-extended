@@ -54,6 +54,7 @@ class YoastExtended {
 		/**
 		 * Include required files
 		 */
+		$this->require( 'includes/helpers/wordpress.php' );
 		$this->require( 'includes/helpers/general.php' );
 		$this->require( 'includes/helpers/yoast.php' );
 
