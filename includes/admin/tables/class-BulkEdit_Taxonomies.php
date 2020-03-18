@@ -5,20 +5,20 @@ namespace YoastExtended\Admin\Tables;
 use \WP_Error, \WP_List_Table, \WP_Query, \WP_Post;
 use \WPSEO_Meta;
 
-class BulkEdit_PostTypes extends WP_List_Table {
+class BulkEdit_Taxonomies extends WP_List_Table {
 
 	/**
 	 * Return a list of user allowed mutable post types
 	 *
 	 * @return array
 	 */
-	public function get_mutable_types() {
+	public function get_mutable_taxonomies() {
 		/**
 		 * Get all registered post types
 		 *
 		 * @var array
 		 */
-		$post_types = get_post_types();
+		$taxonomies = get_taxonomies();
 
 		/**
 		 * Get user Yoast SEO settings
@@ -37,15 +37,15 @@ class BulkEdit_PostTypes extends WP_List_Table {
 		/**
 		 * Build array of mutable post types
 		 */
-		foreach ( $post_types as $post_type ) {
-			$display_metabox = 'display-metabox-pt-' . $post_type;
-			$disable_type = 'disable-' . $post_type;
+		foreach ( $taxonomies as $taxonomy ) {
+			$display_metabox = 'display-metabox-tax-' . $taxonomy;
+			$disable_type = 'disable-' . $taxonomy;
 
 			$has_metabox = !empty( $yoast_settings[ $display_metabox ] );
 			$is_disabled = !empty( $yoast_settings[ $disable_type ] );
 
 			if ( $has_metabox && !$is_disabled ) {
-				$mutable_types[] = $post_type;
+				$mutable_types[] = $taxonomy;
 			}
 		}
 
@@ -53,7 +53,7 @@ class BulkEdit_PostTypes extends WP_List_Table {
 	}
 
 	public function get_views() {
-		$post_types = $this->get_mutable_types();
+		$taxonomies = $this->get_mutable_taxonomies();
 
 		$is_filtered = false;
 
@@ -61,16 +61,16 @@ class BulkEdit_PostTypes extends WP_List_Table {
 			'all' => '<a href="' . remove_query_arg( 'type' ) . '">' . __( 'All', 'yoast_extended' ) . '</a>'
 		];
 
-		foreach ( $post_types as $post_type ) {
+		foreach ( $taxonomies as $taxonomy ) {
 
 			$current = null;
 
-			if ( !empty( $_GET[ 'type' ] ) && $_GET[ 'type' ] === $post_type ) {
+			if ( !empty( $_GET[ 'type' ] ) && $_GET[ 'type' ] === $taxonomy ) {
 				$current = ' class="current"';
 				$is_filtered = true;
 			}
 
-			$view_links[ $post_type ] = '<a href="' . add_query_arg( 'type', $post_type ) . '"' . $current . '>' . ( \YoastExtended\get_post_type_label( $post_type ) ) . '</a>';
+			$view_links[ $taxonomy ] = '<a href="' . add_query_arg( 'type', $taxonomy ) . '"' . $current . '>' . ( \YoastExtended\get_taxonomy_label( $taxonomy ) ) . '</a>';
 		}
 
 		if ( !$is_filtered ) {
@@ -87,8 +87,8 @@ class BulkEdit_PostTypes extends WP_List_Table {
 	 */
 	public function get_columns() {
 		return [
-			'ID'				=> __( 'Post ID', 'yoast_extended' ),
-			'post_title'		=> __( 'Post Title', 'yoast_extended' ),
+			'term_id'			=> __( 'Term ID', 'yoast_extended' ),
+			'name'				=> __( 'Term Name', 'yoast_extended' ),
 			'yoast_title'		=> __( 'Yoast SEO title', 'yoast_extended' ),
 			'yoast_description'	=> __( 'Yoast SEO description', 'yoast_extended' )
 		];
@@ -101,8 +101,8 @@ class BulkEdit_PostTypes extends WP_List_Table {
 	 */
 	public function get_sortable_columns() {
 		return [
-			'ID' => [ 'ID', true ],
-			'post_title' => [ 'post_title', true ],
+			'term_id'	=> [ 'ID', true ],
+			'name'		=> [ 'name', true ],
 		];
 	}
 
@@ -113,7 +113,7 @@ class BulkEdit_PostTypes extends WP_List_Table {
 
 		$this->_column_headers = [ $this->get_columns(), [], $this->get_sortable_columns() ];
 
-		$post_types = $this->get_mutable_types();
+		$post_types = $this->get_mutable_taxonomies();
 
 		$search = !empty( $_REQUEST[ 's' ] ) ? \sanitize_text_field( $_REQUEST[ 's' ] ) : null;
 		$paged = !empty( $_REQUEST[ 'paged' ] ) ? (int)$_REQUEST[ 'paged' ] : 1;

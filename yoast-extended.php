@@ -69,6 +69,7 @@ class YoastExtended {
 
 			// Load WP_List_Table's
 			$this->require( 'includes/admin/tables/class-BulkEdit_PostTypes.php' );
+			$this->require( 'includes/admin/tables/class-BulkEdit_Taxonomies.php' );
 
 			/**
 			 * Inform user that they Yoast SEO plugin has not been detected

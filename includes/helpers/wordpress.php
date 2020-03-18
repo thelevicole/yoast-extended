@@ -65,7 +65,7 @@ function add_filter( string $tag, callable $function_to_add, int $priority = 10,
 
 
 /**
- * Get the human readable label of a posty by key
+ * Get the human readable label of a post type by key
  *
  * @param  string $post_type
  * @return string
@@ -74,6 +74,19 @@ function get_post_type_label( string $post_type ) {
 	$post_type_object = get_post_type_object( $post_type );
 
 	return !empty( $post_type_object->label ) ? $post_type_object->label : $post_type;
+}
+
+
+/**
+ * Get the human readable label of a taxonomy by key
+ *
+ * @param  string $taxonomy
+ * @return string
+ */
+function get_taxonomy_label( string $taxonomy ) {
+	$taxonomy_object = get_taxonomy( $taxonomy );
+
+	return !empty( $taxonomy_object->label ) ? $taxonomy_object->label : $taxonomy;
 }
 
 
