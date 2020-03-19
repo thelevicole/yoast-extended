@@ -193,7 +193,7 @@ class BulkEdit_Taxonomies extends WP_List_Table {
 		 *
 		 * @var ?string
 		 */
-		$current_value = \YoastExtended\get_term_meta( 'title', $item->term_id );
+		$current_value = \YoastExtended\get_term_yoast_meta( $item->term_id, 'title' );
 
 		printf( '<input type="text" name="seo_title" class="yoast_extended-title" data-id="%d" value="" placeholder="%s" style="width: 100%%;">', $item->term_id, esc_attr( __( 'Enter a new SEO title', 'yoast_extended' ) ) );
 
@@ -217,7 +217,7 @@ class BulkEdit_Taxonomies extends WP_List_Table {
 		 *
 		 * @var ?string
 		 */
-		$current_value = \YoastExtended\get_term_meta( 'metadesc', $item->term_id );
+		$current_value = \YoastExtended\get_term_yoast_meta( $item->term_id, 'desc' );
 
 		printf( '<textarea name="seo_description" class="yoast_extended-description" data-id="%d" placeholder="%s" style="width: 100%%;"></textarea>', $item->term_id, esc_attr( __( 'Enter a new SEO description', 'yoast_extended' ) ) );
 

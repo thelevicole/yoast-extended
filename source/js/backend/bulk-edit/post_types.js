@@ -90,6 +90,8 @@
 									$prev.empty();
 									$prev.append( $( '<small>', { text: response.data } ) );
 									$prev.css( 'color', 'red' );
+								} else {
+									console.warn( response );
 								}
 							}
 

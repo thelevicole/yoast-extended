@@ -73,6 +73,80 @@ function update_term_meta( string $yoast_key, int $term_id, $value, $previous = 
 	return \update_term_meta( $term_id, combine_meta_key( $yoast_key ), $value, $previous );
 }
 
+/**
+ * Get yoast taxonomy meta
+ *
+ * @param  ?string $taxonomy [description]
+ * @return mixed
+ */
+function get_taxonomy_yoast_meta( ?string $taxonomy = null ) {
+	$meta = \get_option( 'wpseo_taxonomy_meta', [] );
+
+	if ( $taxonomy ) {
+		return isset( $meta[ $taxonomy ] ) ? $meta[ $taxonomy ] : null;
+	}
+
+	return $meta;
+}
+
+function update_term_yoast_meta( int $term_id, string $field, $value )  {
+	$meta = get_taxonomy_yoast_meta();
+
+	if ( $term = get_term( $term_id ) ) {
+
+		// Create taxonomy array if not exists
+		if ( !isset( $meta[ $term->taxonomy ] ) ) {
+			$meta[ $term->taxonomy ] = [];
+		}
+
+		// Create term array if not exists
+		if ( !isset( $meta[ $term->taxonomy ][ $term->term_id ] ) ) {
+			$meta[ $term->taxonomy ][ $term->term_id ] = [];
+		}
+
+		// Prefix field
+		$field = preg_replace( '/^wpseo_/', '', $field );
+		$field = 'wpseo_' . $field;
+
+		// Add field value
+		$meta[ $term->taxonomy ][ $term->term_id ][ $field ] = $value;
+
+		// Update option
+		return \update_option( 'wpseo_taxonomy_meta', $meta, true );
+	}
+
+	return false;
+}
+
+/**
+ * Get meta values for a specific term by term_id
+ *
+ * @param  int         $term_id [description]
+ * @param  ?string     $field   [description]
+ * @return mixed
+ */
+function get_term_yoast_meta( int $term_id, ?string $field = null ) {
+	if ( $term = get_term( $term_id ) ) {
+		$meta = get_taxonomy_yoast_meta( $term->taxonomy );
+
+		if ( isset( $meta[ $term->term_id ] ) ) {
+			$found = $meta[ $term->term_id ];
+
+			if ( $field ) {
+
+				$field = preg_replace( '/^wpseo_/', '', $field );
+				$field = 'wpseo_' . $field;
+
+				return isset( $found[ $field ] ) ? $found[ $field ] : null;
+			}
+
+			return $found;
+		}
+	}
+
+	return null;
+}
+
 
 
 

@@ -21,7 +21,7 @@
 	 *
 	 * @var string
 	 */
-	$search_label = __( 'Search post types', 'yoast_extended' );
+	$search_label = __( 'Search posts', 'yoast_extended' );
 
 	/**
 	 * Get the current search value from request

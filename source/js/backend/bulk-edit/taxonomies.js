@@ -14,7 +14,7 @@
 		},
 		{
 			selector: '.yoast_extended-description[data-id]',
-			field: 'metadesc',
+			field: 'desc',
 			delay: 1000 // 1 seconds
 		}
 	];
@@ -90,6 +90,8 @@
 									$prev.empty();
 									$prev.append( $( '<small>', { text: response.data } ) );
 									$prev.css( 'color', 'red' );
+								} else {
+									console.warn( response );
 								}
 							}
 
