@@ -117,7 +117,7 @@ class AjaxRequests {
 			return wp_send_json_error( $this->strings[ 'invalid_request' ] );
 		}
 
-		$success = \YoastExtended\update_term_yoast_meta( $term_id, $field, $value );
+		$success = \YoastExtended\update_term_meta( $field, $term_id, $value );
 
 		if ( $success ) {
 			return wp_send_json_success( [
