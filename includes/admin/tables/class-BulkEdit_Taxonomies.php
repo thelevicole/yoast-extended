@@ -194,6 +194,7 @@ class BulkEdit_Taxonomies extends WP_List_Table {
 		 * @var ?string
 		 */
 		$current_value = \YoastExtended\get_term_meta( 'title', $item->term_id );
+		$post_types = \YoastExtended\get_taxonomy_attr( $item->taxonomy, 'object_type', [] );
 
 		printf( '<input type="text" name="seo_title" class="yoast_extended-title" data-id="%d" value="" placeholder="%s" style="width: 100%%;">', $item->term_id, esc_attr( __( 'Enter a new SEO title', 'yoast_extended' ) ) );
 
@@ -202,6 +203,23 @@ class BulkEdit_Taxonomies extends WP_List_Table {
 				printf( '<small><strong>%s</strong> %s</small>', __( 'Current value:', 'yoast_extended' ), esc_html( wp_unslash( $current_value ) ) );
 			}
 		echo '</div>';
+
+		if ( count( $post_types ) > 1 ) {
+			echo '<table class="yoast_extended-tax_pt-meta">';
+				echo '<tbody>';
+					foreach ( $post_types as $post_type ) {
+						echo '<tr>';
+							echo '<td>';
+								echo \YoastExtended\get_post_type_attr( $post_type, 'label', $post_type ) . ':' ;
+							echo '</td>';
+							echo '<td>';
+								printf( '<input type="text" name="%s" class="yoast_extended-title-pt" data-id="%d" value="" style="width: 100%%;">', $post_type, $item->term_id );
+							echo '</td>';
+						echo '</tr>';
+					}
+				echo '</tbody>';
+			echo '</table>';
+		}
 	}
 
 	/**
@@ -218,6 +236,7 @@ class BulkEdit_Taxonomies extends WP_List_Table {
 		 * @var ?string
 		 */
 		$current_value = \YoastExtended\get_term_meta( 'desc', $item->term_id );
+		$post_types = \YoastExtended\get_taxonomy_attr( $item->taxonomy, 'object_type', [] );
 
 		printf( '<textarea name="seo_description" class="yoast_extended-description" data-id="%d" placeholder="%s" style="width: 100%%;"></textarea>', $item->term_id, esc_attr( __( 'Enter a new SEO description', 'yoast_extended' ) ) );
 
@@ -226,6 +245,10 @@ class BulkEdit_Taxonomies extends WP_List_Table {
 				printf( '<small><strong>%s</strong> %s</small>', __( 'Current value:', 'yoast_extended' ), esc_html( wp_unslash( $current_value ) ) );
 			}
 		echo '</div>';
+
+		if ( count( $post_types ) > 1 ) {
+			echo 'More than 1';
+		}
 	}
 
 
