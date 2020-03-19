@@ -70,7 +70,7 @@ class BulkEdit_Taxonomies extends WP_List_Table {
 				$is_filtered = true;
 			}
 
-			$view_links[ $taxonomy ] = '<a href="' . add_query_arg( 'type', $taxonomy ) . '"' . $current . '>' . ( \YoastExtended\get_taxonomy_label( $taxonomy ) ) . '</a>';
+			$view_links[ $taxonomy ] = '<a href="' . add_query_arg( 'type', $taxonomy ) . '"' . $current . '>' . ( \YoastExtended\get_taxonomy_attr( $taxonomy, 'label', $taxonomy ) ) . '</a>';
 		}
 
 		if ( !$is_filtered ) {
@@ -175,7 +175,7 @@ class BulkEdit_Taxonomies extends WP_List_Table {
 	 */
 	public function column_name( $item ) {
 		$permalink = get_term_link( $item->term_id );
-		$taxonomy = \YoastExtended\get_taxonomy_label( $item->taxonomy );
+		$taxonomy = \YoastExtended\get_taxonomy_attr( $item->taxonomy, 'label', $item->taxonomy );
 		printf( '<div><strong><a href="%s">%s</a> &mdash; %s</strong></div>', $permalink, $item->name, $taxonomy );
 		printf( '<div><small>%1$s</small></div>', wp_make_link_relative( $permalink ) );
 	}

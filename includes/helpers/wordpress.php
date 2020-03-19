@@ -68,12 +68,14 @@ function add_filter( string $tag, callable $function_to_add, int $priority = 10,
  * Get the human readable label of a post type by key
  *
  * @param  string $post_type
- * @return string
+ * @param  string $attribute
+ * @param  mixed  $default
+ * @return mixed
  */
-function get_post_type_label( string $post_type ) {
+function get_post_type_attr( string $post_type, string $attribute, $default = null ) {
 	$post_type_object = get_post_type_object( $post_type );
 
-	return !empty( $post_type_object->label ) ? $post_type_object->label : $post_type;
+	return !empty( $post_type_object->$attribute ) ? $post_type_object->$attribute : $default;
 }
 
 
@@ -81,16 +83,15 @@ function get_post_type_label( string $post_type ) {
  * Get the human readable label of a taxonomy by key
  *
  * @param  string $taxonomy
- * @return string
+ * @param  string $attribute
+ * @param  mixed  $default
+ * @return mixed
  */
-function get_taxonomy_label( string $taxonomy ) {
+function get_taxonomy_attr( string $taxonomy, string $attribute, $default = null ) {
 	$taxonomy_object = get_taxonomy( $taxonomy );
 
-	return !empty( $taxonomy_object->label ) ? $taxonomy_object->label : $taxonomy;
+	return !empty( $taxonomy_object->$attribute ) ? $taxonomy_object->$attribute : $default;
 }
-
-
-
 
 
 

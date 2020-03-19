@@ -70,7 +70,7 @@ class BulkEdit_PostTypes extends WP_List_Table {
 				$is_filtered = true;
 			}
 
-			$view_links[ $post_type ] = '<a href="' . add_query_arg( 'type', $post_type ) . '"' . $current . '>' . ( \YoastExtended\get_post_type_label( $post_type ) ) . '</a>';
+			$view_links[ $post_type ] = '<a href="' . add_query_arg( 'type', $post_type ) . '"' . $current . '>' . ( \YoastExtended\get_post_type_attr( $post_type, 'label', $post_type ) ) . '</a>';
 		}
 
 		if ( !$is_filtered ) {
@@ -166,7 +166,7 @@ class BulkEdit_PostTypes extends WP_List_Table {
 	 */
 	public function column_post_title( $item ) {
 		$permalink = get_permalink( $item->ID );
-		$post_type = \YoastExtended\get_post_type_label( $item->post_type );
+		$post_type = \YoastExtended\get_post_type_attr( $item->post_type, 'label', $this->post_type );
 		printf( '<div><strong><a href="%s">%s</a> &mdash; %s</strong></div>', $permalink, $item->post_title, $post_type );
 		printf( '<div><small>%1$s</small></div>', wp_make_link_relative( $permalink ) );
 	}
