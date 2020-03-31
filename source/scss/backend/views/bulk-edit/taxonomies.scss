@@ -4,6 +4,10 @@ form#yoast_extended-bulk_edit-taxonomies {
 		thead {
 			th#term_id { width: 7%; }
 		}
+
+		table.yoast_extended-tax_pt-meta {
+			width: 100%;
+		}
 	}
 
 }

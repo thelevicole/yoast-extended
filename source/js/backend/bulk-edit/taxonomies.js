@@ -7,15 +7,41 @@
 	let valueTracker = {};
 
 	const bulkInputTypes = [
+
+		// Built-in Yoast meta
 		{
+			action: 'bulk_edit_taxonomies',
 			selector: '.yoast_extended-title[data-id]',
 			field: 'title',
 			delay: 800 // 0.8 seconds
 		},
 		{
+			action: 'bulk_edit_taxonomies',
 			selector: '.yoast_extended-description[data-id]',
 			field: 'desc',
 			delay: 1000 // 1 seconds
+		},
+
+		// Custom meta
+		{
+			action: 'bulk_edit_taxonomies_pt',
+			selector: '.yoast_extended-title-pt[data-id]',
+			field: 'title',
+			delay: 800, // 0.8 seconds
+			data: function( data, $input ) {
+				data.post_type = $input.attr( 'name' );
+				return data;
+			}
+		},
+		{
+			action: 'bulk_edit_taxonomies_pt',
+			selector: '.yoast_extended-description-pt[data-id]',
+			field: 'desc',
+			delay: 800, // 0.8 seconds
+			data: function( data, $input ) {
+				data.post_type = $input.attr( 'name' );
+				return data;
+			}
 		}
 	];
 
@@ -29,9 +55,11 @@
 	for ( let i = 0; i < bulkInputTypes.length; i++ ) {
 		const bulkInput = bulkInputTypes[ i ];
 
+		const action = bulkInput.action;
 		const selector = bulkInput.selector;
 		const field = bulkInput.field;
 		const delay = bulkInput.delay;
+		const data = bulkInput.data;
 
 		// Create empty event tracker group
 		if ( !eventTracker[ field ] ) {
@@ -67,13 +95,23 @@
 
 						$input.blur().prop( 'disabled', true );
 
-						controller.ajax( 'bulk_edit_taxonomies', {
-							method: 'POST',
-							data: {
-								term_id: term_id,
-								field: field,
-								value: value
+						var payload = {
+							term_id: term_id,
+							field: field,
+							value: value
+						};
+
+						if ( data ) {
+							if ( typeof data === 'function' ) {
+								payload = data( payload, $input );
+							} else if ( typeof data === 'object' ) {
+								payload = $.extend( payload, data );
 							}
+						}
+
+						controller.ajax( action, {
+							method: 'POST',
+							data: payload
 						} ).then( function( response ) {
 
 							// Reset edit field

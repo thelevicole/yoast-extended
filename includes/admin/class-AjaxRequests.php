@@ -38,6 +38,7 @@ class AjaxRequests {
 		 */
 		$this->register_action( 'bulk_edit_post_types' );
 		$this->register_action( 'bulk_edit_taxonomies' );
+		$this->register_action( 'bulk_edit_taxonomies_pt' );
 	}
 
 	/**
@@ -104,7 +105,7 @@ class AjaxRequests {
 	}
 
 	/**
-	 * Update a post type meta values
+	 * Update a taxonomy meta values
 	 */
 	public function request_bulk_edit_taxonomies() {
 		$term_id = $this->input( 'term_id', 'intval' );
@@ -118,6 +119,48 @@ class AjaxRequests {
 		}
 
 		$success = \YoastExtended\update_term_meta( $field, $term_id, $value );
+
+		if ( $success ) {
+			return wp_send_json_success( [
+				'message' => $this->strings[ 'generic_success' ],
+				'replacement' => sprintf( '<small><strong>%s</strong> %s</small>', __( 'New value:', 'yoast_extended' ), esc_html( wp_unslash( $value ) ) )
+			] );
+		}
+
+
+		return wp_send_json_error( $this->strings[ 'unknown_error' ] );
+	}
+
+
+	/**
+	 * Update a taxonomy / post type meta values
+	 */
+	public function request_bulk_edit_taxonomies_pt() {
+		$term_id = $this->input( 'term_id', 'intval' );
+		$value = $this->input( 'value' );
+		$field = $this->input( 'field' );
+		$post_type = $this->input( 'post_type' );
+
+		$valid = $this->is_valid_nonce();
+
+		if ( !$valid || !$term_id || !in_array( $field, [ 'title', 'desc' ] ) || !$post_type ) {
+			return wp_send_json_error( $this->strings[ 'invalid_request' ] );
+		}
+
+		$term = \get_term( $term_id );
+
+		if ( !$term || \is_wp_error( $term ) ) {
+			return wp_send_json_error( $this->strings[ 'invalid_request' ] );
+		}
+
+		$allowed_pts = \YoastExtended\get_taxonomy_attr( $term->taxonomy, 'object_type', [] );
+
+		if ( empty( $allowed_pts ) || !in_array( $post_type, $allowed_pts ) ) {
+			return wp_send_json_error( $this->strings[ 'invalid_request' ] );
+		}
+
+		// "pt-{$post_type}-{$field}"
+		$success = \YoastExtended\update_term_meta( "pt-{$post_type}-{$field}", $term_id, $value );
 
 		if ( $success ) {
 			return wp_send_json_success( [

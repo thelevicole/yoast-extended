@@ -208,12 +208,19 @@ class BulkEdit_Taxonomies extends WP_List_Table {
 			echo '<table class="yoast_extended-tax_pt-meta">';
 				echo '<tbody>';
 					foreach ( $post_types as $post_type ) {
+						$current_value = \YoastExtended\get_term_meta( "pt-{$post_type}-title", $item->term_id );
+
 						echo '<tr>';
 							echo '<td>';
 								echo \YoastExtended\get_post_type_attr( $post_type, 'label', $post_type ) . ':' ;
 							echo '</td>';
 							echo '<td>';
 								printf( '<input type="text" name="%s" class="yoast_extended-title-pt" data-id="%d" value="" style="width: 100%%;">', $post_type, $item->term_id );
+								echo '<div class="yoast_extended-current">';
+									if ( $current_value ) {
+										printf( '<small><strong>%s</strong> %s</small>', __( 'Current value:', 'yoast_extended' ), esc_html( wp_unslash( $current_value ) ) );
+									}
+								echo '</div>';
 							echo '</td>';
 						echo '</tr>';
 					}
@@ -247,7 +254,27 @@ class BulkEdit_Taxonomies extends WP_List_Table {
 		echo '</div>';
 
 		if ( count( $post_types ) > 1 ) {
-			echo 'More than 1';
+			echo '<table class="yoast_extended-tax_pt-meta">';
+				echo '<tbody>';
+					foreach ( $post_types as $post_type ) {
+						$current_value = \YoastExtended\get_term_meta( "pt-{$post_type}-desc", $item->term_id );
+
+						echo '<tr>';
+							echo '<td>';
+								echo \YoastExtended\get_post_type_attr( $post_type, 'label', $post_type ) . ':' ;
+							echo '</td>';
+							echo '<td>';
+								printf( '<textarea name="%s" class="yoast_extended-description-pt" data-id="%d" style="width: 100%%;"></textarea>', $post_type, $item->term_id );
+								echo '<div class="yoast_extended-current">';
+									if ( $current_value ) {
+										printf( '<small><strong>%s</strong> %s</small>', __( 'Current value:', 'yoast_extended' ), esc_html( wp_unslash( $current_value ) ) );
+									}
+								echo '</div>';
+							echo '</td>';
+						echo '</tr>';
+					}
+				echo '</tbody>';
+			echo '</table>';
 		}
 	}
 

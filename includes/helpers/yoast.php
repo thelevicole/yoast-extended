@@ -21,6 +21,15 @@ function get_taxonomy_meta_prefix() {
 }
 
 /**
+ * Get the meta option name from the Yoast core
+ *
+ * @return string
+ */
+function get_taxonomy_meta_name() {
+	return class_exists( '\WPSEO_Taxonomy_Meta' ) ? \WPSEO_Taxonomy_Meta::$name : 'wpseo_taxonomy_meta';
+}
+
+/**
  * Combine meta prefix and meta key
  *
  * @param  string $key
@@ -70,7 +79,7 @@ function update_post_meta( string $yoast_key, int $post_id, $value, $previous = 
  * @return mixed
  */
 function get_taxonomy_yoast_meta( ?string $taxonomy = null ) {
-	$meta = \get_option( 'wpseo_taxonomy_meta', [] );
+	$meta = \get_option( get_taxonomy_meta_name(), [] );
 
 	if ( $taxonomy ) {
 		return isset( $meta[ $taxonomy ] ) ? $meta[ $taxonomy ] : null;
@@ -136,7 +145,7 @@ function update_term_meta( string $yoast_key, int $term_id, $value )  {
 		$meta[ $term->taxonomy ][ $term->term_id ][ $yoast_key ] = $value;
 
 		// Update option
-		return \update_option( 'wpseo_taxonomy_meta', $meta, true );
+		return \update_option( get_taxonomy_meta_name(), $meta, true );
 	}
 
 	return false;
