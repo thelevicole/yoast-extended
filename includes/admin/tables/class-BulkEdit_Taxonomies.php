@@ -205,6 +205,7 @@ class BulkEdit_Taxonomies extends WP_List_Table {
 		echo '</div>';
 
 		if ( count( $post_types ) > 1 ) {
+			echo '<a href="#open-tax-pts">' . __( 'Edit post types', 'yoast_extended' ) . ' &#9660;</a>';
 			echo '<table class="yoast_extended-tax_pt-meta">';
 				echo '<tbody>';
 					foreach ( $post_types as $post_type ) {
@@ -254,6 +255,7 @@ class BulkEdit_Taxonomies extends WP_List_Table {
 		echo '</div>';
 
 		if ( count( $post_types ) > 1 ) {
+			echo '<a href="#open-tax-pts">' . __( 'Edit post types', 'yoast_extended' ) . ' &#9660;</a>';
 			echo '<table class="yoast_extended-tax_pt-meta">';
 				echo '<tbody>';
 					foreach ( $post_types as $post_type ) {
