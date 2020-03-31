@@ -57,22 +57,8 @@ class YoastExtended {
 		$this->require( 'includes/helpers/wordpress.php' );
 		$this->require( 'includes/helpers/general.php' );
 		$this->require( 'includes/helpers/yoast.php' );
-
-		/**
-		 * Adds custom meta keys to yoast validator
-		 */
-		add_filter( 'wpseo_add_extra_taxmeta_term_defaults', function( $term_defaults ) {
-			if ( $post_types = get_post_types() ) {
-				foreach ( $post_types as $post_type ) {
-					$title_key = \YoastExtended\meta_key( "pt-{$post_type}-title", 'taxonomy' );
-					$desc_key = \YoastExtended\meta_key( "pt-{$post_type}-desc", 'taxonomy' );
-
-					$term_defaults[ $title_key ] = null;
-					$term_defaults[ $desc_key ] = null;
-				}
-			}
-			return $term_defaults;
-		} );
+		// $this->require( 'includes/wp-filters.php' ); // We ain't ready for this yet
+		$this->require( 'includes/yoast-filters.php' );
 
 		/**
 		 * Load files in admin only

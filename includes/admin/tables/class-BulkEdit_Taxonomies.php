@@ -195,8 +195,9 @@ class BulkEdit_Taxonomies extends WP_List_Table {
 		 */
 		$current_value = \YoastExtended\get_term_meta( 'title', $item->term_id );
 		$post_types = \YoastExtended\get_taxonomy_attr( $item->taxonomy, 'object_type', [] );
+		$placeholder = esc_attr( __( 'Enter a new SEO title', 'yoast_extended' ) );
 
-		printf( '<input type="text" name="seo_title" class="yoast_extended-title" data-id="%d" value="" placeholder="%s" style="width: 100%%;">', $item->term_id, esc_attr( __( 'Enter a new SEO title', 'yoast_extended' ) ) );
+		printf( '<input type="text" name="seo_title" class="yoast_extended-title" data-id="%d" value="" placeholder="%s" style="width: 100%%;">', $item->term_id, $placeholder );
 
 		echo '<div class="yoast_extended-current">';
 			if ( $current_value ) {
@@ -205,7 +206,7 @@ class BulkEdit_Taxonomies extends WP_List_Table {
 		echo '</div>';
 
 		if ( count( $post_types ) > 1 ) {
-			echo '<a href="#open-tax-pts">' . __( 'Edit post types', 'yoast_extended' ) . ' &#9660;</a>';
+			echo '<a href="#open-tax-pts" class="toggle-tax-pts">' . __( 'Edit post types', 'yoast_extended' ) . ' &#9660;</a>';
 			echo '<table class="yoast_extended-tax_pt-meta">';
 				echo '<tbody>';
 					foreach ( $post_types as $post_type ) {
@@ -216,7 +217,7 @@ class BulkEdit_Taxonomies extends WP_List_Table {
 								echo \YoastExtended\get_post_type_attr( $post_type, 'label', $post_type ) . ':' ;
 							echo '</td>';
 							echo '<td>';
-								printf( '<input type="text" name="%s" class="yoast_extended-title-pt" data-id="%d" value="" style="width: 100%%;">', $post_type, $item->term_id );
+								printf( '<input type="text" name="%s" class="yoast_extended-title-pt" data-id="%d" value="" placeholder="%s" style="width: 100%%;">', $post_type, $item->term_id, $placeholder );
 								echo '<div class="yoast_extended-current">';
 									if ( $current_value ) {
 										printf( '<small><strong>%s</strong> %s</small>', __( 'Current value:', 'yoast_extended' ), esc_html( wp_unslash( $current_value ) ) );
@@ -245,8 +246,9 @@ class BulkEdit_Taxonomies extends WP_List_Table {
 		 */
 		$current_value = \YoastExtended\get_term_meta( 'desc', $item->term_id );
 		$post_types = \YoastExtended\get_taxonomy_attr( $item->taxonomy, 'object_type', [] );
+		$placeholder = esc_attr( __( 'Enter a new SEO description', 'yoast_extended' ) );
 
-		printf( '<textarea name="seo_description" class="yoast_extended-description" data-id="%d" placeholder="%s" style="width: 100%%;"></textarea>', $item->term_id, esc_attr( __( 'Enter a new SEO description', 'yoast_extended' ) ) );
+		printf( '<textarea name="seo_description" class="yoast_extended-description" data-id="%d" placeholder="%s" style="width: 100%%;"></textarea>', $item->term_id, $placeholder );
 
 		echo '<div class="yoast_extended-current">';
 			if ( $current_value ) {
@@ -255,7 +257,7 @@ class BulkEdit_Taxonomies extends WP_List_Table {
 		echo '</div>';
 
 		if ( count( $post_types ) > 1 ) {
-			echo '<a href="#open-tax-pts">' . __( 'Edit post types', 'yoast_extended' ) . ' &#9660;</a>';
+			echo '<a href="#open-tax-pts" class="toggle-tax-pts">' . __( 'Edit post types', 'yoast_extended' ) . ' &#9660;</a>';
 			echo '<table class="yoast_extended-tax_pt-meta">';
 				echo '<tbody>';
 					foreach ( $post_types as $post_type ) {
@@ -266,7 +268,7 @@ class BulkEdit_Taxonomies extends WP_List_Table {
 								echo \YoastExtended\get_post_type_attr( $post_type, 'label', $post_type ) . ':' ;
 							echo '</td>';
 							echo '<td>';
-								printf( '<textarea name="%s" class="yoast_extended-description-pt" data-id="%d" style="width: 100%%;"></textarea>', $post_type, $item->term_id );
+								printf( '<textarea name="%s" class="yoast_extended-description-pt" data-id="%d" placeholder="%s" style="width: 100%%;"></textarea>', $post_type, $item->term_id, $placeholder );
 								echo '<div class="yoast_extended-current">';
 									if ( $current_value ) {
 										printf( '<small><strong>%s</strong> %s</small>', __( 'Current value:', 'yoast_extended' ), esc_html( wp_unslash( $current_value ) ) );

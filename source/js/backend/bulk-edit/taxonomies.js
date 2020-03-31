@@ -3,7 +3,7 @@
 
 	const $form = $( 'form#yoast_extended-bulk_edit-taxonomies' );
 
-	$form.on( 'click', 'a[href="#open-tax-pts"]', function( ) {
+	$form.on( 'click', 'a.toggle-tax-pts', function( ) {
 		$( this ).closest( 'tr' ).find( 'table.yoast_extended-tax_pt-meta' ).toggle();
 		return false;
 	} );
