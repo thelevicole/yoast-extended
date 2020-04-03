@@ -6,7 +6,7 @@
  * Description: Advanced features and tools to extended the all-in-one SEO solution for WordPress, Yoast.
  * Author: Levi Cole
  * Author URI: https://thelevicole.com
- * Version: 1.0.0
+ * Version: 1.0.1
  * Text Domain: yoast_extended
  * Network: true
  * Requires at least: 5.3.2
@@ -37,7 +37,7 @@ class YoastExtended {
 		$this->settings = [
 
 			// Generic
-			'version'		=> '1.0.0',
+			'version'		=> '1.0.1',
 			'path'			=> plugin_dir_path( __FILE__ ),
 			'url'			=> plugin_dir_url( __FILE__ ),
 			'basename'		=> plugin_basename( __FILE__ ),
